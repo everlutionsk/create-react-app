@@ -24,8 +24,8 @@ function verifyPackageTree() {
     'babel-jest',
     'babel-loader',
     'eslint',
-    'jest',
-    'webpack',
+    // 'jest',
+    // 'webpack',
     'webpack-dev-server',
   ];
   // Inlined from semver-regex, MIT license.

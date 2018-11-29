@@ -94,8 +94,8 @@ function verifyTypeScriptSetup() {
       suggested: 'es5',
     },
     lib: { suggested: ['dom', 'dom.iterable', 'esnext'] },
-    allowJs: { suggested: true },
-    skipLibCheck: { suggested: false },
+    allowJs: { suggested: false },
+    skipLibCheck: { suggested: true },
     esModuleInterop: { suggested: true },
     allowSyntheticDefaultImports: { suggested: true },
     strict: { suggested: true },
@@ -123,11 +123,11 @@ function verifyTypeScriptSetup() {
     },
     // We do not support absolute imports, though this may come as a future
     // enhancement
-    baseUrl: {
-      value: undefined,
-      reason: 'absolute imports are not supported (yet)',
-    },
-    paths: { value: undefined, reason: 'aliased imports are not supported' },
+    // baseUrl: {
+    //   value: undefined,
+    //   reason: 'absolute imports are not supported (yet)',
+    // },
+    // paths: { value: undefined, reason: 'aliased imports are not supported' },
   };
 
   const formatDiagnosticHost = {
@@ -252,7 +252,7 @@ function verifyTypeScriptSetup() {
   if (!fs.existsSync(paths.appTypeDeclarations)) {
     fs.writeFileSync(
       paths.appTypeDeclarations,
-      `/// <reference types="react-scripts" />${os.EOL}`
+      `/// <reference types="@everlutionsk/react-scripts" />${os.EOL}`
     );
   }
 }

@@ -11,6 +11,7 @@
 const path = require('path');
 const fs = require('fs');
 const url = require('url');
+const findUp = require('find-up');
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebook/create-react-app/issues/637
@@ -73,6 +74,17 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
+function resolveMonorepoPackagesPath() {
+  const rootSpecPath = path.resolve(appDirectory, '../../package.json');
+  if (fs.existsSync(rootSpecPath) && require(rootSpecPath).workspaces != null) {
+    return path.resolve(appDirectory, '..');
+  }
+}
+
+function resolveTSLintConfig() {
+  return findUp.sync('tslint.json', { cwd: appDirectory }) || undefined;
+}
+
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
@@ -90,6 +102,8 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
+  monorepoPackages: resolveMonorepoPackagesPath(),
+  appTsLintConfig: resolveTSLintConfig(),
 };
 
 // @remove-on-eject-begin
@@ -117,6 +131,8 @@ module.exports = {
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
   appTypeDeclarations: resolveApp('src/react-app-env.d.ts'),
   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
+  monorepoPackages: resolveMonorepoPackagesPath(),
+  appTsLintConfig: resolveTSLintConfig(),
 };
 
 const ownPackageJson = require('../package.json');
@@ -151,6 +167,8 @@ if (
     ownNodeModules: resolveOwn('node_modules'),
     appTypeDeclarations: resolveOwn('template/src/react-app-env.d.ts'),
     ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
+    monorepoPackages: resolveMonorepoPackagesPath(),
+    appTsLintConfig: resolveTSLintConfig(),
   };
 }
 // @remove-on-eject-end

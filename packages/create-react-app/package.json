@@ -1,5 +1,5 @@
 {
-  "name": "create-react-app",
+  "name": "@everlutionsk/create-react-app",
   "version": "2.1.1",
   "keywords": [
     "react"
@@ -10,6 +10,9 @@
   "engines": {
     "node": ">=4"
   },
+  "publishConfig": {
+    "registry": "https://npm.everlution.sk"
+  },
   "bugs": {
     "url": "https://github.com/facebook/create-react-app/issues"
   },
@@ -19,7 +22,7 @@
     "yarn.lock.cached"
   ],
   "bin": {
-    "create-react-app": "./index.js"
+    "everlutionsk-create-react-app": "./index.js"
   },
   "dependencies": {
     "chalk": "1.1.3",

@@ -89,7 +89,7 @@ module.exports = function(api, opts, env) {
           ignoreBrowserslistConfig: true,
           // If users import all core-js they're probably not concerned with
           // bundle size. We shouldn't rely on magic to try and shrink it.
-          useBuiltIns: false,
+          useBuiltIns: 'usage',
           // Do not transform modules to CJS
           modules: false,
           // Exclude transforms that make all code slower

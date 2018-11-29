@@ -1,9 +1,12 @@
 {
-  "name": "babel-preset-react-app",
+  "name": "@everlutionsk/babel-preset-react-app",
   "version": "6.1.0",
   "description": "Babel preset used by Create React App",
   "repository": "facebook/create-react-app",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.everlution.sk"
+  },
   "bugs": {
     "url": "https://github.com/facebook/create-react-app/issues"
   },

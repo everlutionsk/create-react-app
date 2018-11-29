@@ -1,9 +1,12 @@
 {
-  "name": "react-dev-utils",
+  "name": "@everlutionsk/react-dev-utils",
   "version": "6.1.1",
   "description": "Webpack utilities used by Create React App",
   "repository": "facebook/create-react-app",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.everlution.sk"
+  },
   "bugs": {
     "url": "https://github.com/facebook/create-react-app/issues"
   },

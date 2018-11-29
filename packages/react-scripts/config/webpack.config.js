@@ -30,6 +30,8 @@ const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin-alt');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const crypto = require('crypto');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 // @remove-on-eject-begin
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
@@ -40,6 +42,8 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
+// Analyze a resulting bundle and serve results.
+const shouldAnalyzeBundle = process.env.ANALYZE_BUNDLE === 'true';
 
 // Check if TypeScript is setup
 const useTypeScript = fs.existsSync(paths.appTsConfig);
@@ -55,6 +59,11 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+
+  const buildId = crypto
+    .createHash('sha1')
+    .update(Math.random().toString())
+    .digest('hex');
 
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -178,6 +187,9 @@ module.exports = function(webpackEnv) {
               .replace(/\\/g, '/')
         : isEnvDevelopment &&
           (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+    },
+    watchOptions: {
+      aggregateTimeout: 150,
     },
     optimization: {
       minimize: isEnvProduction,
@@ -326,6 +338,16 @@ module.exports = function(webpackEnv) {
           include: paths.appSrc,
         },
         {
+          enforce: 'post',
+          test: /environment\.(js|jsx|ts|tsx)/,
+          loader: require.resolve('safe-environment-loader'),
+          options: {
+            defaults: {
+              BUILD_ID: buildId,
+            },
+          },
+        },
+        {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
           // back to the "file" loader at the end of the loader list.
@@ -345,7 +367,8 @@ module.exports = function(webpackEnv) {
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: paths.appSrc,
+              include: paths.monorepoPackages || paths.appSrc,
+              exclude: /node_modules/,
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
@@ -373,6 +396,19 @@ module.exports = function(webpackEnv) {
                 ),
                 // @remove-on-eject-end
                 plugins: [
+                  require.resolve('react-hot-loader/babel'),
+                  [
+                    require.resolve('babel-plugin-import'),
+                    {
+                      libraryName: 'antd',
+                      libraryDirectory: 'es',
+                      style: 'css',
+                    },
+                  ],
+                  [
+                    require.resolve('babel-plugin-styled-components'),
+                    { pure: true },
+                  ],
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -619,9 +655,10 @@ module.exports = function(webpackEnv) {
           typescript: resolve.sync('typescript', {
             basedir: paths.appNodeModules,
           }),
-          async: false,
+          async: isEnvDevelopment,
           checkSyntacticErrors: true,
           tsconfig: paths.appTsConfig,
+          tslint: paths.appTsLintConfig,
           compilerOptions: {
             module: 'esnext',
             moduleResolution: 'node',
@@ -640,8 +677,9 @@ module.exports = function(webpackEnv) {
           ],
           watch: paths.appSrc,
           silent: true,
-          formatter: typescriptFormatter,
+          formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
+      shouldAnalyzeBundle && new BundleAnalyzerPlugin(),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
