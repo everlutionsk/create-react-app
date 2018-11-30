@@ -20,3 +20,8 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `ANALYZE_BUNDLE=true yarn build`
 - [Babel polyfills](https://babeljs.io/docs/en/babel-polyfill) based on usage (`useBuiltIns: 'usage'`)
 - Randomized `BUILD_ID` env variable
+
+## Internet Destroyer support
+
+Babel is already trying to include all necessary polyfills for the not dead browsers.
+However, to support IE, you need to include additional polyfills as described [here](https://github.com/facebook/create-react-app/tree/master/packages/react-app-polyfill).
