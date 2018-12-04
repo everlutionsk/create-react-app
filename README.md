@@ -37,9 +37,9 @@ setConfig({
 });
 ```
 
-See this [issue](https://github.com/gaearon/react-hot-loader/issues/1088) for more info.
+⚠️ `react-hot-loader` version must be **^4.5**. ⚠️
 
-⚠️ If you think, that this is not a problem anymore, please create a PR to remove/update this section! ⚠️
+See this [issue](https://github.com/gaearon/react-hot-loader/issues/1088) for more info.
 
 ## Internet Destroyer support
 
