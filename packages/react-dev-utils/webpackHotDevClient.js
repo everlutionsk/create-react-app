@@ -142,10 +142,12 @@ function handleWarnings(warnings) {
 
   // Attempt to apply hot updates or reload.
   if (isHotUpdate) {
+    printWarnings();
+
     tryApplyUpdates(function onSuccessfulHotUpdate() {
       // Only print warnings if we aren't refreshing the page.
       // Otherwise they'll disappear right away anyway.
-      printWarnings();
+      // printWarnings();
       // Only dismiss it when we're sure it's a hot update.
       // Otherwise it would flicker right before the reload.
       ErrorOverlay.dismissBuildError();

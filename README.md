@@ -21,6 +21,26 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - [Babel polyfills](https://babeljs.io/docs/en/babel-polyfill) based on usage (`useBuiltIns: 'usage'`)
 - Randomized `BUILD_ID` env variable
 
+## Hooks and Hot reload
+
+As `react-hot-loader` is not able to reload functional-components without loosing their state (December 2018),
+you need to disable stateful-reload for functional-components in order to use Hooks.
+
+Add the following `react-hot-loader` config into your entry point:
+
+```ts
+import { setConfig } from 'react-hot-loader';
+
+setConfig({
+  ignoreSFC: true,
+  pureRender: true,
+});
+```
+
+See this [issue](https://github.com/gaearon/react-hot-loader/issues/1088) for more info.
+
+⚠️ If you think, that this is not a problem anymore, please create a PR to remove/update this section! ⚠️
+
 ## Internet Destroyer support
 
 Babel is already trying to include all necessary polyfills for the not dead browsers.

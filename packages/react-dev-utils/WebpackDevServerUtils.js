@@ -107,7 +107,7 @@ function createCompiler(
   urls,
   useYarn,
   useTypeScript,
-  reload
+  devSocket
 ) {
   // "Compiler" is a low-level interface to Webpack.
   // It lets us listen to some events and provide our own custom messages.
@@ -167,10 +167,15 @@ function createCompiler(
       }
 
       const messages = await tsMessagesPromise;
+      // Push errors and warnings into compilation result
+      // to show them after external browser refresh.
       compilation.errors.push(...messages.errors);
       compilation.warnings.push(...messages.warnings);
-      if (messages.errors.length > 0 || messages.warnings.length > 0) {
-        reload();
+
+      if (messages.errors.length > 0) {
+        devSocket.errors(messages.errors);
+      } else if (messages.warnings.length > 0) {
+        devSocket.warnings(messages.warnings);
       }
     });
   }
