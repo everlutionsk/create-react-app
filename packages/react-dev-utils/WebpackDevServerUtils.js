@@ -159,25 +159,6 @@ function createCompiler(
         });
       }
     );
-
-    compiler.hooks.afterCompile.tap('afterCompile', async compilation => {
-      // If any errors already exist, skip this.
-      if (compilation.errors.length > 0) {
-        return;
-      }
-
-      const messages = await tsMessagesPromise;
-      // Push errors and warnings into compilation result
-      // to show them after external browser refresh.
-      compilation.errors.push(...messages.errors);
-      compilation.warnings.push(...messages.warnings);
-
-      if (messages.errors.length > 0) {
-        devSocket.errors(messages.errors);
-      } else if (messages.warnings.length > 0) {
-        devSocket.warnings(messages.warnings);
-      }
-    });
   }
 
   // "done" event fires when Webpack has finished recompiling the bundle.
@@ -205,9 +186,20 @@ function createCompiler(
         )
       );
 
-      const tsMessages = await tsMessagesPromise;
-      statsData.errors.push(...tsMessages.errors);
-      statsData.warnings.push(...tsMessages.warnings);
+      const messages = await tsMessagesPromise;
+      statsData.errors.push(...messages.errors);
+      statsData.warnings.push(...messages.warnings);
+      // Push errors and warnings into compilation result
+      // to show them after page refresh triggered by user.
+      stats.compilation.errors.push(...messages.errors);
+      stats.compilation.warnings.push(...messages.warnings);
+
+      if (messages.errors.length > 0) {
+        devSocket.errors(messages.errors);
+      } else if (messages.warnings.length > 0) {
+        devSocket.warnings(messages.warnings);
+      }
+
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
     }
