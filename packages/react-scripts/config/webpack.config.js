@@ -461,7 +461,7 @@ module.exports = function(webpackEnv) {
                     'react-scripts',
                   ]
                 ),
-                plugin: [styledComponentsPlugin],
+                plugins: [styledComponentsPlugin],
                 // @remove-on-eject-end
                 // If an error happens in a package, it's possible to be
                 // because it was compiled. Thus, we don't want the browser
