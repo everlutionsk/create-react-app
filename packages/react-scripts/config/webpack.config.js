@@ -65,6 +65,11 @@ module.exports = function(webpackEnv) {
     .update(Math.random().toString())
     .digest('hex');
 
+  const styledComponentsPlugin = [
+    require.resolve('babel-plugin-styled-components'),
+    { pure: true },
+  ];
+
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
   // In development, we always serve from the root. This makes config easier.
@@ -405,10 +410,7 @@ module.exports = function(webpackEnv) {
                       style: 'css',
                     },
                   ],
-                  [
-                    require.resolve('babel-plugin-styled-components'),
-                    { pure: true },
-                  ],
+                  styledComponentsPlugin,
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -459,6 +461,7 @@ module.exports = function(webpackEnv) {
                     'react-scripts',
                   ]
                 ),
+                plugin: [styledComponentsPlugin],
                 // @remove-on-eject-end
                 // If an error happens in a package, it's possible to be
                 // because it was compiled. Thus, we don't want the browser
