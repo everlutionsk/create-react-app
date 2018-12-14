@@ -193,9 +193,6 @@ module.exports = function(webpackEnv) {
         : isEnvDevelopment &&
           (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
     },
-    watchOptions: {
-      aggregateTimeout: 150,
-    },
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
