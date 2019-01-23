@@ -344,6 +344,7 @@ module.exports = function(webpackEnv) {
           test: /environment\.(js|jsx|ts|tsx)/,
           loader: require.resolve('safe-environment-loader'),
           options: {
+            envResolver: 'env.js',
             defaults: {
               BUILD_ID: buildId,
             },
