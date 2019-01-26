@@ -1,6 +1,6 @@
 {
   "name": "@everlutionsk/react-scripts",
-  "version": "2.1.14",
+  "version": "2.1.15",
   "description": "Configuration and scripts for Create React App.",
   "repository": "facebook/create-react-app",
   "license": "MIT",
@@ -71,7 +71,7 @@
     "react-dev-utils": "npm:@everlutionsk/react-dev-utils@^6.1.4",
     "react-hot-loader": "^4.3.12",
     "resolve": "1.8.1",
-    "safe-environment-loader": "^1.2.0",
+    "safe-environment-loader": "^1.2.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.1.0",
