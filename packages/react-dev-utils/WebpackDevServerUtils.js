@@ -18,6 +18,7 @@ const clearConsole = require('./clearConsole');
 const formatWebpackMessages = require('./formatWebpackMessages');
 const getProcessForPort = require('./getProcessForPort');
 const typescriptFormatter = require('./typescriptFormatter');
+const forkTsCheckerWebpackPlugin = require('./ForkTsCheckerWebpackPlugin');
 
 const isInteractive = process.stdout.isTTY;
 
@@ -100,15 +101,15 @@ function printInstructions(appName, urls, useYarn) {
   console.log();
 }
 
-function createCompiler(
-  webpack,
-  config,
+function createCompiler({
   appName,
+  config,
+  devSocket,
   urls,
   useYarn,
   useTypeScript,
-  devSocket
-) {
+  webpack,
+}) {
   // "Compiler" is a low-level interface to Webpack.
   // It lets us listen to some events and provide our own custom messages.
   let compiler;
@@ -144,9 +145,9 @@ function createCompiler(
       });
     });
 
-    compiler.hooks.forkTsCheckerReceive.tap(
-      'afterTypeScriptCheck',
-      (diagnostics, lints) => {
+    forkTsCheckerWebpackPlugin
+      .getCompilerHooks(compiler)
+      .receive.tap('afterTypeScriptCheck', (diagnostics, lints) => {
         const allMsgs = [...diagnostics, ...lints];
         const format = message =>
           `${message.file}\n${typescriptFormatter(message, true)}`;
@@ -157,8 +158,7 @@ function createCompiler(
             .filter(msg => msg.severity === 'warning')
             .map(format),
         });
-      }
-    );
+      });
   }
 
   // "done" event fires when Webpack has finished recompiling the bundle.
@@ -180,15 +180,19 @@ function createCompiler(
     });
 
     if (useTypeScript && statsData.errors.length === 0) {
-      process.stdout.write(
-        chalk.yellow(
-          'Files successfully emitted, waiting for typecheck results...'
-        )
-      );
+      const delayedMsg = setTimeout(() => {
+        console.log(
+          chalk.yellow(
+            'Files successfully emitted, waiting for typecheck results...'
+          )
+        );
+      }, 100);
 
       const messages = await tsMessagesPromise;
+      clearTimeout(delayedMsg);
       statsData.errors.push(...messages.errors);
       statsData.warnings.push(...messages.warnings);
+
       // Push errors and warnings into compilation result
       // to show them after page refresh triggered by user.
       stats.compilation.errors.push(...messages.errors);
@@ -200,8 +204,9 @@ function createCompiler(
         devSocket.warnings(messages.warnings);
       }
 
-      process.stdout.clearLine();
-      process.stdout.cursorTo(0);
+      if (isInteractive) {
+        clearConsole();
+      }
     }
 
     const messages = formatWebpackMessages(statsData);
@@ -340,8 +345,6 @@ function onProxyError(proxy) {
 
 function prepareProxy(proxy, appPublicFolder) {
   // `proxy` lets you specify alternate servers for specific requests.
-  // It can either be a string or an object conforming to the Webpack dev server proxy configuration
-  // https://webpack.github.io/docs/webpack-dev-server.html
   if (!proxy) {
     return undefined;
   }
@@ -358,7 +361,7 @@ function prepareProxy(proxy, appPublicFolder) {
     process.exit(1);
   }
 
-  // Otherwise, if proxy is specified, we will let it handle any request except for files in the public folder.
+  // If proxy is specified, let it handle any request except for files in the public folder.
   function mayProxy(pathname) {
     const maybePublicPath = path.resolve(appPublicFolder, pathname.slice(1));
     return !fs.existsSync(maybePublicPath);
@@ -392,7 +395,7 @@ function prepareProxy(proxy, appPublicFolder) {
       // For `GET` requests, if request `accept`s text/html, we pick /index.html.
       // Modern browsers include text/html into `accept` header when navigating.
       // However API calls like `fetch()` won’t generally accept text/html.
-      // If this heuristic doesn’t work well for you, use a custom `proxy` object.
+      // If this heuristic doesn’t work well for you, use `src/setupProxy.js`.
       context: function(pathname, req) {
         return (
           req.method !== 'GET' ||
@@ -402,7 +405,7 @@ function prepareProxy(proxy, appPublicFolder) {
         );
       },
       onProxyReq: proxyReq => {
-        // Browers may send Origin headers even with same-origin
+        // Browsers may send Origin headers even with same-origin
         // requests. To prevent CORS issues, we have to change
         // the Origin to match the target URL.
         if (proxyReq.getHeader('origin')) {
