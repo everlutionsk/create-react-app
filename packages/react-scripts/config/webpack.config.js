@@ -368,7 +368,7 @@ module.exports = function(webpackEnv) {
             // Process application JS with Babel.
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
-              test: /\.(js|mjs|jsx)$/, // TODO: @deftomat - re-enable linting for ts/tsx files!
+              test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.monorepoPackages || paths.appSrc,
               exclude: /node_modules/,
               loader: require.resolve('babel-loader'),
