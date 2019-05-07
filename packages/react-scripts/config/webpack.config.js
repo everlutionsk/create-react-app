@@ -658,7 +658,7 @@ module.exports = function(webpackEnv) {
           useTypescriptIncrementalApi: true,
           checkSyntacticErrors: true,
           tsconfig: paths.appTsConfig,
-          tslint: paths.appTsLintConfig,
+          // tslint: paths.appTsLintConfig,
           reportFiles: [
             '**',
             '../**',
