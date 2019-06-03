@@ -54,6 +54,13 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+const minimist = require('minimist');
+const args = minimist(process.argv.slice(2));
+
+const templateParameters = fs.existsSync(paths.appHtmlParameters)
+  ? () => require(paths.appHtmlParameters)({ args })
+  : () => ({});
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function(webpackEnv) {
@@ -560,6 +567,7 @@ module.exports = function(webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            templateParameters
           },
           isEnvProduction
             ? {

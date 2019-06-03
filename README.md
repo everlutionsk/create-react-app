@@ -45,3 +45,45 @@ See this [issue](https://github.com/gaearon/react-hot-loader/issues/1088) for mo
 
 Babel is already trying to include all necessary polyfills for the not dead browsers.
 However, to support IE, you need to include additional polyfills as described [here](https://github.com/facebook/create-react-app/tree/master/packages/react-app-polyfill).
+
+
+## HTML template parameters
+
+In order to dynamically inject parameters to `index.html` template you can create `html.config.js` in the root of your React Application. This file should export async function which will return an object where keys are names of used parameters and values are string values to be rendered as HTML code.
+
+Example:
+
+```
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= csp %>
+    <!-- ... -->
+  </head>
+
+  <body>
+    <!-- ... -->
+  </body>
+</html>
+```
+
+
+```
+<!-- html.config.js -->
+
+module.exports = async function({ args: { stage } }) {
+  stage = stage || 'dev';
+  const isProd = stage === 'prod';
+
+  const imgSrc = isProd ? 'https://cdn.example.com' : `https://cdn-${stage}.example.com`
+
+  return {
+    csp: `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${imgSrc}">`
+  };
+};
+
+```
+
+Above example will render different CSP meta tag based on provided stage.
