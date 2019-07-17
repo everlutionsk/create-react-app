@@ -73,6 +73,13 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
+function resolveMonorepoPackagesPath() {
+  const rootSpecPath = path.resolve(appDirectory, '../../package.json');
+  if (fs.existsSync(rootSpecPath) && require(rootSpecPath).workspaces != null) {
+    return path.resolve(appDirectory, '..');
+  }
+}
+
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
@@ -91,6 +98,8 @@ module.exports = {
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
   servedPath: getServedPath(resolveApp('package.json')),
+  appHtmlParameters: resolveApp('html.config.js'),
+  monorepoPackages: resolveMonorepoPackagesPath(),
 };
 
 // @remove-on-eject-begin
@@ -119,6 +128,8 @@ module.exports = {
   ownNodeModules: resolveOwn('node_modules'), // This is empty on npm 3
   appTypeDeclarations: resolveApp('src/react-app-env.d.ts'),
   ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
+  appHtmlParameters: resolveApp('html.config.js'),
+  monorepoPackages: resolveMonorepoPackagesPath(),
 };
 
 const ownPackageJson = require('../package.json');
@@ -154,6 +165,8 @@ if (
     ownNodeModules: resolveOwn('node_modules'),
     appTypeDeclarations: resolveOwn('template/src/react-app-env.d.ts'),
     ownTypeDeclarations: resolveOwn('lib/react-app.d.ts'),
+    appHtmlParameters: resolveApp('html.config.js'),
+    monorepoPackages: resolveMonorepoPackagesPath(),
   };
 }
 // @remove-on-eject-end

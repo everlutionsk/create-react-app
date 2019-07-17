@@ -315,7 +315,7 @@ function install(root, useYarn, usePnp, dependencies, verbose, isOnline) {
     let args;
     if (useYarn) {
       command = 'yarnpkg';
-      args = ['add', '--exact'];
+      args = ['add', '--exact', '--registry', 'https://npm.everlution.sk'];
       if (!isOnline) {
         args.push('--offline');
       }
@@ -345,6 +345,8 @@ function install(root, useYarn, usePnp, dependencies, verbose, isOnline) {
         '--save-exact',
         '--loglevel',
         'error',
+        '--registry',
+        'https://npm.everlution.sk',
       ].concat(dependencies);
 
       if (usePnp) {
@@ -499,7 +501,7 @@ function run(
 }
 
 function getInstallPackage(version, originalDirectory) {
-  let packageToInstall = 'react-scripts';
+  let packageToInstall = '@everlutionsk/react-scripts';
   const validSemver = semver.valid(version);
   if (validSemver) {
     packageToInstall += `@${validSemver}`;

@@ -54,7 +54,7 @@ module.exports = {
 
   overrides: [
     {
-      files: ['**/*.ts?(x)'],
+      files: ['*.ts?(x)'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2018,
@@ -83,15 +83,15 @@ module.exports = {
         '@typescript-eslint/no-array-constructor': 'warn',
         '@typescript-eslint/no-namespace': 'error',
         'no-use-before-define': 'off',
-        '@typescript-eslint/no-use-before-define': [
-          'warn',
-          {
-            functions: false,
-            classes: false,
-            variables: false,
-            typedefs: false,
-          },
-        ],
+        // '@typescript-eslint/no-use-before-define': [
+        //   'warn',
+        //   {
+        //     functions: false,
+        //     classes: false,
+        //     variables: false,
+        //     typedefs: false,
+        //   },
+        // ],
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': [
           'warn',
@@ -217,7 +217,7 @@ module.exports = {
     ],
     'no-with': 'warn',
     'no-whitespace-before-property': 'warn',
-    'react-hooks/exhaustive-deps': 'warn',
+    // 'react-hooks/exhaustive-deps': 'warn',
     'require-yield': 'warn',
     'rest-spread-spacing': ['warn', 'never'],
     strict: ['warn', 'never'],

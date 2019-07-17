@@ -45,6 +45,20 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 // makes for a smoother build process.
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
+const args = require('minimist')(process.argv.slice(2));
+const analyzeBundle = args['analyze-bundle'] || false;
+const templateParameters = fs.existsSync(paths.appHtmlParameters)
+  ? () => require(paths.appHtmlParameters)({ args })
+  : () => ({});
+
+function moduleExists(name) {
+  try {
+    return require.resolve(name);
+  } catch (e) {
+    return false;
+  }
+}
+
 const imageInlineSizeLimit = parseInt(
   process.env.IMAGE_INLINE_SIZE_LIMIT || '10000'
 );
@@ -63,6 +77,11 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+
+  const styledComponentsPlugin = [
+    require.resolve('babel-plugin-styled-components'),
+    { pure: true },
+  ];
 
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -287,6 +306,10 @@ module.exports = function(webpackEnv) {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
+        'react-dom':
+          isEnvDevelopment && moduleExists('@hot-loader/react-dom')
+            ? '@hot-loader/react-dom'
+            : 'react-dom',
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -355,7 +378,22 @@ module.exports = function(webpackEnv) {
               loader: require.resolve('eslint-loader'),
             },
           ],
-          include: paths.appSrc,
+          include: paths.monorepoPackages || paths.appSrc,
+          exclude: /node_modules/,
+        },
+        {
+          enforce: 'post',
+          test: /environment\.(js|jsx|ts|tsx)/,
+          loader: require.resolve('safe-environment-loader'),
+          options: {
+            envResolver: 'env.config.js',
+            defaults: {
+              BUILD_ID: require('crypto')
+                .createHash('sha1')
+                .update(Math.random().toString())
+                .digest('hex'),
+            },
+          },
         },
         {
           // "oneOf" will traverse all following loaders until one will
@@ -377,7 +415,8 @@ module.exports = function(webpackEnv) {
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: paths.appSrc,
+              include: paths.monorepoPackages || paths.appSrc,
+              exclude: /node_modules/,
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
@@ -405,6 +444,16 @@ module.exports = function(webpackEnv) {
                 ),
                 // @remove-on-eject-end
                 plugins: [
+                  require.resolve('react-hot-loader/babel'),
+                  [
+                    require.resolve('babel-plugin-import'),
+                    {
+                      libraryName: 'antd',
+                      libraryDirectory: 'es',
+                      style: 'css',
+                    },
+                  ],
+                  styledComponentsPlugin,
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -455,6 +504,7 @@ module.exports = function(webpackEnv) {
                     'react-scripts',
                   ]
                 ),
+                plugins: [styledComponentsPlugin],
                 // @remove-on-eject-end
                 // If an error happens in a package, it's possible to be
                 // because it was compiled. Thus, we don't want the browser
@@ -557,6 +607,7 @@ module.exports = function(webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            templateParameters,
           },
           isEnvProduction
             ? {
@@ -663,7 +714,7 @@ module.exports = function(webpackEnv) {
           }),
           async: isEnvDevelopment,
           useTypescriptIncrementalApi: true,
-          checkSyntacticErrors: true,
+          // checkSyntacticErrors: true,
           resolveModuleNameModule: process.versions.pnp
             ? `${__dirname}/pnpTs.js`
             : undefined,
@@ -673,6 +724,14 @@ module.exports = function(webpackEnv) {
           tsconfig: paths.appTsConfig,
           reportFiles: [
             '**',
+            '../**',
+            '../../**',
+            '../../../**',
+            '../../../../**',
+            '../../../../../**',
+            '../../../../../../**',
+            '../../../../../../../**',
+            '../../../../../../../../**',
             '!**/__tests__/**',
             '!**/?(*.)(spec|test).*',
             '!**/src/setupProxy.*',
@@ -683,6 +742,8 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
+      analyzeBundle &&
+        new (require('webpack-bundle-analyzer')).BundleAnalyzerPlugin(),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

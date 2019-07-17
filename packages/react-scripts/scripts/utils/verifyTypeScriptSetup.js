@@ -100,7 +100,7 @@ function verifyTypeScriptSetup() {
       suggested: 'es5',
     },
     lib: { suggested: ['dom', 'dom.iterable', 'esnext'] },
-    allowJs: { suggested: true },
+    allowJs: { suggested: false },
     skipLibCheck: { suggested: true },
     esModuleInterop: { suggested: true },
     allowSyntheticDefaultImports: { suggested: true },
@@ -122,14 +122,14 @@ function verifyTypeScriptSetup() {
       reason: 'to match webpack resolution',
     },
     resolveJsonModule: { value: true, reason: 'to match webpack loader' },
-    isolatedModules: { value: true, reason: 'implementation limitation' },
+    // isolatedModules: { value: true, reason: 'implementation limitation' },
     noEmit: { value: true },
     jsx: {
       parsedValue: ts.JsxEmit.Preserve,
       value: 'preserve',
       reason: 'JSX is compiled by Babel',
     },
-    paths: { value: undefined, reason: 'aliased imports are not supported' },
+    // paths: { value: undefined, reason: 'aliased imports are not supported' },
   };
 
   const formatDiagnosticHost = {
@@ -257,7 +257,7 @@ function verifyTypeScriptSetup() {
   if (!fs.existsSync(paths.appTypeDeclarations)) {
     fs.writeFileSync(
       paths.appTypeDeclarations,
-      `/// <reference types="react-scripts" />${os.EOL}`
+      `/// <reference types="@everlutionsk/react-scripts" />${os.EOL}`
     );
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config-react-app",
+  "name": "@everlutionsk/eslint-config-react-app",
   "version": "4.0.1",
   "description": "ESLint configuration used by Create React App",
   "repository": {
@@ -8,6 +8,9 @@
     "directory": "packages/eslint-config-react-app"
   },
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.everlution.sk"
+  },
   "bugs": {
     "url": "https://github.com/facebook/create-react-app/issues"
   },

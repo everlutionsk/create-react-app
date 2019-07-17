@@ -1,5 +1,5 @@
 {
-  "name": "react-scripts",
+  "name": "@everlutionsk/react-scripts",
   "version": "3.0.1",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
@@ -8,6 +8,9 @@
     "directory": "packages/react-scripts"
   },
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.everlution.sk"
+  },
   "engines": {
     "node": ">=8.10"
   },
@@ -43,7 +46,7 @@
     "dotenv": "6.2.0",
     "dotenv-expand": "4.2.0",
     "eslint": "^5.16.0",
-    "eslint-config-react-app": "^4.0.1",
+    "eslint-config-react-app": "npm:@everlutionsk/babel-preset-react-app@^4.0.1",
     "eslint-loader": "2.1.2",
     "eslint-plugin-flowtype": "2.50.1",
     "eslint-plugin-import": "2.16.0",
@@ -68,7 +71,7 @@
     "postcss-preset-env": "6.6.0",
     "postcss-safe-parser": "4.0.1",
     "react-app-polyfill": "^1.0.1",
-    "react-dev-utils": "^9.0.1",
+    "react-dev-utils": "npm:@everlutionsk/react-dev-utils@^9.0.1",
     "resolve": "1.10.0",
     "sass-loader": "7.1.0",
     "semver": "6.0.0",
@@ -79,7 +82,13 @@
     "webpack": "4.35.0",
     "webpack-dev-server": "3.2.1",
     "webpack-manifest-plugin": "2.0.4",
-    "workbox-webpack-plugin": "4.2.0"
+    "workbox-webpack-plugin": "4.2.0",
+    "babel-plugin-import": "^1.12.0",
+    "babel-plugin-styled-components": "^1.10.6",
+    "react-hot-loader": "^4.12.7",
+    "safe-environment-loader": "^1.2.2",
+    "webpack-bundle-analyzer": "^3.3.2",
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "react": "^16.8.4",
