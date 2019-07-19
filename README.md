@@ -1,5 +1,3 @@
-<!-- TODO: UDPATE README -->
-
 # Everlution Create React App
 
 Fork of an official [Create React App](https://github.com/facebook/create-react-app)!
@@ -19,7 +17,33 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - [Safe environment loader](https://github.com/deftomat/safe-environment-loader) for `environment.ts` files.
 - [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `yarn build --analyze-bundle`
 - support for `html.config.js` - usage: see below
+- customized ESLint rules
 - Randomized `BUILD_ID` env variable
+
+## 🚀 Performance tips
+
+### Use `paths` in `tsconfig.base.json`
+
+If you are using monorepo setup, then make sure that you have a correct `paths` setting in `tsconfig.base.json`.
+Otherwise, TypeScript can suffer from performance issues in watch mode.
+
+For example, for a namespace `@project`, you need to add the following:
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@project/*": ["packages/*"]
+    }
+  }
+}
+```
+
+### Disable isolatedModules
+
+A described in https://github.com/microsoft/TypeScript/issues/32294, `isolatedModules: true` can slow down a watch mode quite badly.
+
+To avoid this issue, make sure that you have `isolatedModules: false` in your `tsconfig.base.json`.
 
 ## 🔥🔥🔥 Hot reload 🔥🔥🔥
 
