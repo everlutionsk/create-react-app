@@ -18,6 +18,7 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - [Optimized AntD styles](https://ant.design/docs/react/use-with-create-react-app#Use-babel-plugin-import)
 - [Safe environment loader](https://github.com/deftomat/safe-environment-loader) for `environment.ts` files.
 - [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `yarn build --analyze-bundle`
+- support for `html.config.js` - usage: see below
 - Randomized `BUILD_ID` env variable
 
 ## 🔥🔥🔥 Hot reload 🔥🔥🔥
