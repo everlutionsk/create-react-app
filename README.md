@@ -19,6 +19,7 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - support for `html.config.js` - usage: see below
 - customized ESLint rules
 - Randomized `BUILD_ID` env variable
+- Support hot-reload for linked packages. See [`link-with`](https://github.com/deftomat/link-with) for more details.
 
 ## 🚀 Performance tips
 

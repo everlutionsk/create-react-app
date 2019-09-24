@@ -9,12 +9,12 @@
 
 const path = require('path');
 const escape = require('escape-string-regexp');
+const { getLinkedPackages } = require('link-with');
 
 module.exports = function ignoredFiles(appSrc) {
-  return new RegExp(
-    `^(?!${escape(
-      path.normalize(appSrc + '/').replace(/[\\]+/g, '/')
-    )}).+/node_modules/`,
-    'g'
-  );
+  const linkedPackageNames = getLinkedPackages().map(pkg => pkg.name);
+
+  if (linkedPackageNames.length === 0) return '**/node_modules/**';
+
+  return `**/node_modules/!(${linkedPackageNames.join('|')})/**`;
 };
