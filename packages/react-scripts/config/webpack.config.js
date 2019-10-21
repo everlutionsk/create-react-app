@@ -82,7 +82,13 @@ module.exports = function(webpackEnv) {
 
   const styledComponentsPlugin = [
     require.resolve('babel-plugin-styled-components'),
-    { pure: true },
+    {
+      pure: isEnvProduction,
+      displayName: isEnvDevelopment,
+      minify: isEnvProduction,
+      ssr: false,
+      transpileTemplateLiterals: true,
+    },
   ];
 
   // Webpack uses `publicPath` to determine where the app is being served from.
@@ -326,6 +332,7 @@ module.exports = function(webpackEnv) {
           isEnvDevelopment && moduleExists('@hot-loader/react-dom')
             ? '@hot-loader/react-dom'
             : 'react-dom',
+        lodash: moduleExists('lodash-es') ? 'lodash-es' : 'lodash',
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -457,13 +464,42 @@ module.exports = function(webpackEnv) {
                 // @remove-on-eject-end
                 plugins: [
                   require.resolve('react-hot-loader/babel'),
+                  // We are using `babel-plugin-import` to change imports like
+                  // `import { Button } from 'antd'` into `import Button from `antd/es/Button`.
+                  // Webpack already supports the tree-shaking for a production builds but
+                  // development builds can be quite massive as Webpack will include the whole
+                  // library. This could increase the memory usage and parse time for build tool
+                  // and also for browser itself. To avoid this issue, we need to reduce
+                  // the imported code for a large UI libraries like ANTD and Material-UI.
                   [
+                    // Optimize ANTD imports for dev builds & automatic per-component CSS import
                     require.resolve('babel-plugin-import'),
                     {
                       libraryName: 'antd',
                       libraryDirectory: 'es',
                       style: 'css',
                     },
+                    'antd',
+                  ],
+                  [
+                    // Optimize MATERIAL-UI imports for dev builds
+                    require.resolve('babel-plugin-import'),
+                    {
+                      libraryName: '@material-ui/core',
+                      libraryDirectory: 'esm',
+                      camel2DashComponentName: false,
+                    },
+                    'materialui-core',
+                  ],
+                  [
+                    // Optimize MATERIAL-UI ICON imports for dev builds
+                    require.resolve('babel-plugin-import'),
+                    {
+                      libraryName: '@material-ui/icons',
+                      libraryDirectory: 'esm',
+                      camel2DashComponentName: false,
+                    },
+                    'materialui-icons',
                   ],
                   styledComponentsPlugin,
                   [

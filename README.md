@@ -13,9 +13,11 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - Monorepo support
 - Improved [styled-components](https://github.com/styled-components/babel-plugin-styled-components) support
 - [React hot loader](https://github.com/gaearon/react-hot-loader)
-- [Optimized AntD styles](https://ant.design/docs/react/use-with-create-react-app#Use-babel-plugin-import)
+- [Automatic per-component CSS import for AntD](https://ant.design/docs/react/use-with-create-react-app#Use-babel-plugin-import)
+- [Optimize Material-UI imports to reduce bundle size in dev mode](https://material-ui.com/guides/minimizing-bundle-size/)
 - [Safe environment loader](https://github.com/deftomat/safe-environment-loader) for `environment.ts` files.
 - [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `yarn build --analyze-bundle`
+- Alias `lodash` to `lodash-es` if possible to reduce bundle size
 - support for `html.config.js` - usage: see below
 - customized ESLint rules
 - Randomized `BUILD_ID` env variable
