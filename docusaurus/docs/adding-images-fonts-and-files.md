@@ -39,7 +39,8 @@ Webpack finds all relative module references in CSS (they start with `./`) and r
 
 Please be advised that this is also a custom feature of Webpack.
 
-**It is not required for React** but many people enjoy it (and React Native uses a similar mechanism for images).<br>
+**It is not required for React** but many people enjoy it (and React Native uses a similar mechanism for images).
+
 An alternative way of handling static assets is described in the next section.
 
 ## Adding SVGs
@@ -60,4 +61,4 @@ const App = () => (
 
 This is handy if you don't want to load SVG as a separate file. Don't forget the curly braces in the import! The `ReactComponent` import name is special and tells Create React App that you want a React component that renders an SVG, rather than its filename.
 
-> **Tip:** The imported SVG React Component accepts a `title` prop along with other props that a `svg` element accepts. Use this prop to add an accessbile title to your svg component.
+> **Tip:** The imported SVG React Component accepts a `title` prop along with other props that a `svg` element accepts. Use this prop to add an accessible title to your svg component.
