@@ -483,6 +483,7 @@ module.exports = function(webpackEnv) {
                 // @remove-on-eject-end
                 plugins: [
                   require.resolve('react-hot-loader/babel'),
+                  require.resolve('babel-plugin-lodash'),
                   // We are using `babel-plugin-import` to change imports like
                   // `import { Button } from 'antd'` into `import Button from `antd/es/Button`.
                   // Webpack already supports the tree-shaking for a production builds but
