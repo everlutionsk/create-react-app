@@ -13,6 +13,7 @@ const isWsl = require('is-wsl');
 const path = require('path');
 const webpack = require('webpack');
 const resolve = require('resolve');
+const child_process = require('child_process');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -678,6 +679,7 @@ module.exports = function(webpackEnv) {
             inject: true,
             template: paths.appHtml,
             templateParameters,
+            meta: isEnvProduction ? { 'build-info': getBuildInfo() } : {},
           },
           isEnvProduction
             ? {
@@ -842,3 +844,13 @@ module.exports = function(webpackEnv) {
     performance: false,
   };
 };
+
+function getBuildInfo() {
+  const now = new Date().toISOString();
+  try {
+    const commitId = child_process.execSync('git rev-parse HEAD').toString();
+    return `${now}|${commitId}`;
+  } catch (e) {
+    return now;
+  }
+}

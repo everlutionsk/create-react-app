@@ -23,6 +23,7 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - customized ESLint rules
 - Randomized `BUILD_ID` env variable
 - Support hot-reload for linked packages. See [`link-with`](https://github.com/deftomat/link-with) for more details.
+- Build information (date, commitId, etc.) available as `build-info` meta tag in `index.html`.
 
 ## 🚀 Performance tips
 
