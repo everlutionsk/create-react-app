@@ -60,7 +60,7 @@ function moduleExists(name) {
 }
 
 const imageInlineSizeLimit = parseInt(
-  process.env.IMAGE_INLINE_SIZE_LIMIT || '10000'
+  process.env.IMAGE_INLINE_SIZE_LIMIT || '3000'
 );
 
 // Check if TypeScript is setup

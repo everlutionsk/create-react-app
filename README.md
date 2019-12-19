@@ -25,6 +25,7 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - Support hot-reload for linked packages. See [`link-with`](https://github.com/deftomat/link-with) for more details.
 - Build information (date, commitId, etc.) available as `build-info` meta tag in `index.html`.
 - Disable inline-runtime-chunk by default in production
+- Reduce default IMAGE_INLINE_SIZE_LIMIT to 3000 (from 10000)
 
 ## 🚀 Performance tips
 
