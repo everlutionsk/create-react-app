@@ -31,6 +31,8 @@
   },
   "types": "./lib/react-app.d.ts",
   "dependencies": {
+    "@everlutionsk/helpers-tools": "^1.2.1",
+    "@everlutionsk/project-config": "^1.0.0",
     "@babel/core": "7.6.0",
     "@svgr/webpack": "4.3.2",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
@@ -79,7 +81,7 @@
     "react-hot-loader": "^4.12.7",
     "resolve": "1.12.0",
     "resolve-url-loader": "3.1.0",
-    "safe-environment-loader": "^1.2.2",
+    "safe-environment-loader": "^2.0.0",
     "sass-loader": "7.2.0",
     "semver": "6.3.0",
     "style-loader": "1.0.0",

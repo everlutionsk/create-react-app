@@ -13,7 +13,6 @@ const isWsl = require('is-wsl');
 const path = require('path');
 const webpack = require('webpack');
 const resolve = require('resolve');
-const child_process = require('child_process');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -45,20 +44,6 @@ const appPackageJson = require(paths.appPackageJson);
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
-const args = require('minimist')(process.argv.slice(2));
-const analyzeBundle = args['analyze-bundle'] || false;
-const templateParameters = fs.existsSync(paths.appHtmlParameters)
-  ? () => require(paths.appHtmlParameters)({ args })
-  : () => ({});
-
-function moduleExists(name) {
-  try {
-    return require.resolve(name);
-  } catch (e) {
-    return false;
-  }
-}
-
 const imageInlineSizeLimit = parseInt(
   process.env.IMAGE_INLINE_SIZE_LIMIT || '3000'
 );
@@ -74,15 +59,22 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
-module.exports = function(webpackEnv) {
+module.exports = async function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
 
-  // Some apps do not need the benefits of saving a web request, so not inlining the chunk
-  // makes for a smoother build process.
-  const shouldInlineRuntimeChunk =
-    process.env.INLINE_RUNTIME_CHUNK === 'true' ||
-    (process.env.INLINE_RUNTIME_CHUNK == null && isEnvDevelopment);
+  const {
+    shouldInlineRuntimeChunk,
+    appBabelPlugins,
+    dependencyBabelPlugins,
+    safeEnvironmentLoader,
+    htmlWebpackPluginOptions,
+    bundleAnalyzer,
+    moduleAliases,
+  } = await require('./everlution')({
+    isEnvDevelopment,
+    isEnvProduction,
+  });
 
   // Variable used for enabling profiling in Production
   // passed into alias object. Uses a flag if passed into the build command
@@ -107,17 +99,6 @@ module.exports = function(webpackEnv) {
     : isEnvDevelopment && '';
   // Get environment variables to inject into our app.
   const env = getClientEnvironment(publicUrl);
-
-  const styledComponentsPlugin = [
-    require.resolve('babel-plugin-styled-components'),
-    {
-      pure: isEnvProduction,
-      displayName: isEnvDevelopment,
-      minify: isEnvProduction,
-      ssr: false,
-      transpileTemplateLiterals: true,
-    },
-  ];
 
   // common function to get style loaders
   const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -349,11 +330,7 @@ module.exports = function(webpackEnv) {
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
         ...(modules.webpackAliases || {}),
-        lodash: moduleExists('lodash-es') ? 'lodash-es' : 'lodash',
-        'react-dom':
-          isEnvDevelopment && moduleExists('@hot-loader/react-dom')
-            ? '@hot-loader/react-dom'
-            : 'react-dom',
+        ...moduleAliases,
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -423,20 +400,7 @@ module.exports = function(webpackEnv) {
           include: paths.monorepoPackages || paths.appSrc,
           exclude: /node_modules/,
         },
-        {
-          enforce: 'post',
-          test: /environment\.(js|jsx|ts|tsx)/,
-          loader: require.resolve('safe-environment-loader'),
-          options: {
-            envResolver: 'env.config.js',
-            defaults: {
-              BUILD_ID: require('crypto')
-                .createHash('sha1')
-                .update(Math.random().toString())
-                .digest('hex'),
-            },
-          },
-        },
+        safeEnvironmentLoader,
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -486,46 +450,7 @@ module.exports = function(webpackEnv) {
                 ),
                 // @remove-on-eject-end
                 plugins: [
-                  require.resolve('react-hot-loader/babel'),
-                  require.resolve('babel-plugin-lodash'),
-                  // We are using `babel-plugin-import` to change imports like
-                  // `import { Button } from 'antd'` into `import Button from `antd/es/Button`.
-                  // Webpack already supports the tree-shaking for a production builds but
-                  // development builds can be quite massive as Webpack will include the whole
-                  // library. This could increase the memory usage and parse time for build tool
-                  // and also for browser itself. To avoid this issue, we need to reduce
-                  // the imported code for a large UI libraries like ANTD and Material-UI.
-                  [
-                    // Optimize ANTD imports for dev builds & automatic per-component CSS import
-                    require.resolve('babel-plugin-import'),
-                    {
-                      libraryName: 'antd',
-                      libraryDirectory: 'es',
-                      style: 'css',
-                    },
-                    'antd',
-                  ],
-                  [
-                    // Optimize MATERIAL-UI imports for dev builds
-                    require.resolve('babel-plugin-import'),
-                    {
-                      libraryName: '@material-ui/core',
-                      libraryDirectory: 'esm',
-                      camel2DashComponentName: false,
-                    },
-                    'materialui-core',
-                  ],
-                  [
-                    // Optimize MATERIAL-UI ICON imports for dev builds
-                    require.resolve('babel-plugin-import'),
-                    {
-                      libraryName: '@material-ui/icons',
-                      libraryDirectory: 'esm',
-                      camel2DashComponentName: false,
-                    },
-                    'materialui-icons',
-                  ],
-                  styledComponentsPlugin,
+                  ...appBabelPlugins,
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -578,7 +503,7 @@ module.exports = function(webpackEnv) {
                     'react-scripts',
                   ]
                 ),
-                plugins: [styledComponentsPlugin],
+                plugins: dependencyBabelPlugins,
                 // @remove-on-eject-end
                 // Babel sourcemaps are needed for debugging into node_modules
                 // code.  Without the options below, debuggers like VSCode
@@ -681,8 +606,8 @@ module.exports = function(webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
-            templateParameters,
-            meta: isEnvProduction ? { 'build-info': getBuildInfo() } : {},
+            templateParameters: htmlWebpackPluginOptions.templateParameters,
+            meta: htmlWebpackPluginOptions.meta,
           },
           isEnvProduction
             ? {
@@ -827,8 +752,7 @@ module.exports = function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
-      analyzeBundle &&
-        new (require('webpack-bundle-analyzer')).BundleAnalyzerPlugin(),
+      bundleAnalyzer,
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
@@ -847,13 +771,3 @@ module.exports = function(webpackEnv) {
     performance: false,
   };
 };
-
-function getBuildInfo() {
-  const now = new Date().toISOString();
-  try {
-    const commitId = child_process.execSync('git rev-parse HEAD').toString();
-    return `${now}|${commitId}`;
-  } catch (e) {
-    return now;
-  }
-}

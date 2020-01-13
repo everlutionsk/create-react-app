@@ -19,13 +19,45 @@ npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-a
 - [Safe environment loader](https://github.com/deftomat/safe-environment-loader) for `environment.ts` files.
 - [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `yarn build --analyze-bundle`
 - Alias `lodash` to `lodash-es` if possible to reduce bundle size
-- support for `html.config.js` - usage: see below
+- support for `project.config.js` - usage: see below
 - customized ESLint rules
-- Randomized `BUILD_ID` env variable
+- Build ID available as `BUILD_ID` env variable and as `build-id` meta in `index.html`
 - Support hot-reload for linked packages. See [`link-with`](https://github.com/deftomat/link-with) for more details.
-- Build information (date, commitId, etc.) available as `build-info` meta tag in `index.html`.
 - Disable inline-runtime-chunk by default in production
 - Reduce default IMAGE_INLINE_SIZE_LIMIT to 3000 (from 10000)
+
+## ⚙️ Project configuration support
+
+Build process supports `project.config.js` as a source of ENV values, CSP configuration, etc.
+
+The following code is supported:
+
+```js
+module.exports = {
+  environmentValues: {
+    STAGE: 'dev',
+  },
+  contentSecurityPolicy: {
+    scriptSrc: ["'self'"],
+    imgSrc: ["'self'", 'data:'],
+  },
+  htmlParameters: {
+    title: 'App title',
+  },
+};
+```
+
+**Config will allow you to:**
+
+- access `process.env.STAGE` in any `environment.ts` file
+- inject Content Security Policy into `index.html`
+- use `<%= title %>` placeholder in `index.html`
+
+For more info about `project.config.js`, please see [@everlutionsk/project-config](https://github.com/everlutionsk/packages/tree/master/packages/project-config).
+
+## 🔥 Hot reload
+
+To enable full hot-reload experience, the `@hot-loader/react-dom` must be installed as a dev dependency.
 
 ## 🚀 Performance tips
 
@@ -46,57 +78,7 @@ For example, for a namespace `@project`, you need to add the following:
 }
 ```
 
-### Disable isolatedModules
-
-A described in https://github.com/microsoft/TypeScript/issues/32294, `isolatedModules: true` can slow down a watch mode quite badly.
-
-To avoid this issue, make sure that you have `isolatedModules: false` in your `tsconfig.base.json`.
-
-## 🔥🔥🔥 Hot reload 🔥🔥🔥
-
-To enable full hot-reload experience, the `@hot-loader/react-dom` must be installed as a dev dependency.
-
 ## Internet Destroyer support
 
 Babel is already trying to include all necessary polyfills for the not dead browsers.
 However, to support IE, you need to include additional polyfills as described [here](https://github.com/facebook/create-react-app/tree/master/packages/react-app-polyfill).
-
-## HTML template parameters
-
-In order to dynamically inject parameters to `index.html` template you can create `html.config.js` in the root of your React Application. This file should export async function which will return an object where keys are names of used parameters and values are string values to be rendered as HTML code.
-
-Example:
-
-```
-<!-- index.html -->
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <%= csp %>
-    <!-- ... -->
-  </head>
-
-  <body>
-    <!-- ... -->
-  </body>
-</html>
-```
-
-```
-<!-- html.config.js -->
-
-module.exports = async function({ args: { stage } }) {
-  stage = stage || 'dev';
-  const isProd = stage === 'prod';
-
-  const imgSrc = isProd ? 'https://cdn.example.com' : `https://cdn-${stage}.example.com`
-
-  return {
-    csp: `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${imgSrc}">`
-  };
-};
-
-```
-
-Above example will render different CSP meta tag based on provided stage.
