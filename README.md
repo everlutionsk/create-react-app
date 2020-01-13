@@ -19,7 +19,7 @@ If you've previously installed `create-react-app` globally via `npm install -g c
 - [Optimize Material-UI imports to reduce bundle size in dev mode](https://material-ui.com/guides/minimizing-bundle-size/)
 - [Optimize lodash imports to reduce bundle size in dev mode](https://github.com/lodash/babel-plugin-lodash)
 - [Safe environment loader](https://github.com/deftomat/safe-environment-loader) for `environment.ts` files.
-- [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `yarn build --analyze-bundle`
+- [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `react-scripts build --analyze-bundle`
 - Alias `lodash` to `lodash-es` if possible to reduce bundle size
 - support for `project.config.js` - usage: see below
 - customized ESLint rules
