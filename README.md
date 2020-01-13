@@ -8,6 +8,8 @@ Fork of an official [Create React App](https://github.com/facebook/create-react-
 npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-app && everlutionsk-create-react-app my-app --typescript
 ```
 
+If you've previously installed `create-react-app` globally via `npm install -g create-react-app`, we recommend you uninstall the package using `npm uninstall -g create-react-app` to ensure that npx always uses the latest version.
+
 ## What’s Included in this fork?
 
 - Monorepo support
