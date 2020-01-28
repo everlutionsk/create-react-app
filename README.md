@@ -83,4 +83,24 @@ For example, for a namespace `@project`, you need to add the following:
 ## Internet Destroyer support
 
 Babel is already trying to include all necessary polyfills for the not dead browsers.
-However, to support IE, you need to include additional polyfills as described [here](https://github.com/facebook/create-react-app/tree/master/packages/react-app-polyfill).
+However, to support IE, you need to include additional polyfills.
+
+We recommend to use [polyfill.io](https://polyfill.io/v3/url-builder/) with the `nomodule` attribute to ignore it in moder browsers.
+
+**Example:**
+```html
+<!-- public/index.html -->
+
+<head>
+  <script
+    nomodule
+    crossorigin="anonymous"
+    src="https://polyfill.io/v3/polyfill.min.js?features=fetch%2CArray.prototype.find%2CArray.prototype.findIndex%2CArray.prototype.includes%2CString.prototype.includes%2CObject.assign%2CObject.entries%2CSymbol"
+  ></script>
+</head>
+```
+
+This will load the necessary polyfills for IE11. However, every blocking dependency on an external service could be harmfull, so please **make sure you includes `nomodule` attribute**, which will inform the moder browsers that they need to ignore it completelly.
+
+A provided polyfill.io link includes only the basic polyfills. To fully support IE11, you need to go trough the every page/functionality and check if there is no missing polyfill.
+
