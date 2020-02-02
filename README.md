@@ -100,7 +100,7 @@ We recommend to use [polyfill.io](https://polyfill.io/v3/url-builder/) with the 
 </head>
 ```
 
-This will load the necessary polyfills for IE11. However, every blocking dependency on an external service could be harmfull, so please **make sure you include `nomodule` attribute**, which will inform the moder browsers that they need to ignore it completelly.
+This will load the necessary polyfills for IE11. However, every blocking dependency on an external service could be harmfull, so please **make sure you include `nomodule` attribute**, which will inform the modern browsers that they need to ignore it completelly.
 
-A provided polyfill.io link includes only the basic polyfills. To fully support IE11, you need to go trough the every page/functionality and check if there is no missing polyfill.
+A provided *polyfill.io* link includes only the basic polyfills. To fully support IE11, you need to go trough the every page/functionality and check if there is no missing polyfill.
 
