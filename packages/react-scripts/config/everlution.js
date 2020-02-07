@@ -1,6 +1,10 @@
+// @ts-check
+
 const { createConfigFinder } = require('@everlutionsk/project-config');
 const { generateBuildId } = require('@everlutionsk/helpers-tools');
 const minimist = require('minimist');
+const path = require('path');
+const paths = require('./paths');
 
 module.exports = async function customConfig({
   isEnvDevelopment,
@@ -8,8 +12,9 @@ module.exports = async function customConfig({
 }) {
   const args = minimist(process.argv.slice(2));
   const analyzeBundle = args['analyze-bundle'] || false;
-  const findProjectConfig = createConfigFinder();
+  const findProjectConfig = createConfigFinder({ cwd: paths.appPath });
   const buildId = generateBuildId();
+  const craConfig = resolveCraConfig({ isEnvDevelopment, isEnvProduction });
 
   const shouldInlineRuntimeChunk =
     process.env.INLINE_RUNTIME_CHUNK === 'true' ||
@@ -93,10 +98,6 @@ module.exports = async function customConfig({
     },
   };
 
-  const bundleAnalyzer =
-    analyzeBundle &&
-    new (require('webpack-bundle-analyzer')).BundleAnalyzerPlugin();
-
   const moduleAliases = {
     lodash: moduleExists('lodash-es') ? 'lodash-es' : 'lodash',
     'react-dom':
@@ -104,6 +105,13 @@ module.exports = async function customConfig({
         ? '@hot-loader/react-dom'
         : 'react-dom',
   };
+
+  const additionalPlugins = [
+    analyzeBundle &&
+      new (require('webpack-bundle-analyzer').BundleAnalyzerPlugin)(),
+    ...craConfig.plugins,
+  ].filter(Boolean);
+
   return {
     shouldInlineRuntimeChunk,
     appBabelPlugins,
@@ -113,10 +121,19 @@ module.exports = async function customConfig({
       buildId,
       findProjectConfig,
     }),
-    bundleAnalyzer,
     moduleAliases,
+    additionalPlugins,
   };
 };
+
+function resolveCraConfig(resolverParams) {
+  try {
+    const resolver = require(path.resolve(paths.appPath, 'cra.config.js'));
+    return resolver(resolverParams);
+  } catch (e) {
+    return { plugins: [] };
+  }
+}
 
 async function generateHtmlWebpackPluginOptions({
   buildId,

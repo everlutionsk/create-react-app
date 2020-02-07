@@ -68,7 +68,7 @@ module.exports = async function(webpackEnv) {
     dependencyBabelPlugins,
     safeEnvironmentLoader,
     htmlWebpackPluginOptions,
-    bundleAnalyzer,
+    additionalPlugins,
     moduleAliases,
   } = await require('./everlution')({
     isEnvDevelopment,
@@ -162,7 +162,7 @@ module.exports = async function(webpackEnv) {
     bail: isEnvProduction,
     devtool: isEnvProduction
       ? shouldUseSourceMap
-        ? 'source-map'
+        ? 'cheap-module-source-map'
         : false
       : isEnvDevelopment && 'cheap-module-source-map',
     // These are the "entry points" to our application.
@@ -503,8 +503,8 @@ module.exports = async function(webpackEnv) {
                 // Babel sourcemaps are needed for debugging into node_modules
                 // code.  Without the options below, debuggers like VSCode
                 // show incorrect code and set breakpoints on the wrong lines.
-                sourceMaps: shouldUseSourceMap,
-                inputSourceMap: shouldUseSourceMap,
+                sourceMaps: false,
+                inputSourceMap: false,
               },
             },
             // "postcss" loader applies autoprefixer to our CSS.
@@ -749,7 +749,7 @@ module.exports = async function(webpackEnv) {
           // The formatter is invoked directly in WebpackDevServerUtils during development
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
-      bundleAnalyzer,
+      ...additionalPlugins,
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

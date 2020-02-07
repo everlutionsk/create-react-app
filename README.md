@@ -27,6 +27,8 @@ If you've previously installed `create-react-app` globally via `npm install -g c
 - Support hot-reload for linked packages. See [`link-with`](https://github.com/deftomat/link-with) for more details.
 - Disable inline-runtime-chunk by default in production
 - Reduce default IMAGE_INLINE_SIZE_LIMIT to 3000 (from 10000)
+- Simplified source maps: always use `cheap-module-source-map` and ignore source maps from `node_modules`
+- build configuration support (see below)
 
 ## ⚙️ Project configuration support
 
@@ -56,6 +58,27 @@ module.exports = {
 - use `<%= title %>` placeholder in `index.html`
 
 For more info about `project.config.js`, please see [@everlutionsk/project-config](https://github.com/everlutionsk/packages/tree/master/packages/project-config).
+
+## ⚙️ Build configuration support
+
+Build process supports `cra.config.js` as a source of custom webpack plugins which will be used during compilation.
+
+The following code is supported:
+
+```js
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+
+module.exports = function() {
+  return {
+    plugins: [
+      new MonacoWebpackPlugin({
+        languages: ['json', 'javascript', 'typescript'],
+        features: ['!snippets'],
+      }),
+    ],
+  };
+};
+```
 
 ## 🔥 Hot reload
 
@@ -88,6 +111,7 @@ However, to support IE, you need to include additional polyfills.
 We recommend to use [polyfill.io](https://polyfill.io/v3/url-builder/) with the `nomodule` attribute to ignore it in moder browsers.
 
 **Example:**
+
 ```html
 <!-- public/index.html -->
 
@@ -102,5 +126,4 @@ We recommend to use [polyfill.io](https://polyfill.io/v3/url-builder/) with the 
 
 This will load the necessary polyfills for IE11. However, every blocking dependency on an external service could be harmfull, so please **make sure you include `nomodule` attribute**, which will inform the modern browsers that they need to ignore it completelly.
 
-A provided *polyfill.io* link includes only the basic polyfills. To fully support IE11, you need to go trough the every page/functionality and check if there is no missing polyfill.
-
+A provided _polyfill.io_ link includes only the basic polyfills. To fully support IE11, you need to go trough the every page/functionality and check if there is no missing polyfill.
