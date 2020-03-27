@@ -1,6 +1,6 @@
 {
   "name": "@everlutionsk/react-scripts",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "Configuration and scripts for Create React App.",
   "repository": {
     "type": "git",
@@ -85,7 +85,7 @@
     "webpack-manifest-plugin": "2.2.0",
     "workbox-webpack-plugin": "4.3.1",
     "@everlutionsk/helpers-tools": "^1.2.2",
-    "@everlutionsk/project-config": "^1.0.1",
+    "@everlutionsk/project-config": "^1.1.1",
     "babel-plugin-import": "^1.13.0",
     "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-styled-components": "^1.10.6",
