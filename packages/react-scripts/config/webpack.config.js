@@ -730,6 +730,12 @@ module.exports = async function(webpackEnv) {
             ? `${__dirname}/pnpTs.js`
             : undefined,
           tsconfig: paths.appTsConfig,
+          compilerOptions: {
+            // TODO(@deftomat): Consider creating PR to origin repo.
+            // Ignoring JS files may dramatically speed up the type-check.
+            allowJs: false,
+            checkJs: false,
+          },
           reportFiles: [
             '**',
             '../**',
