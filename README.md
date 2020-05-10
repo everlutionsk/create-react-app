@@ -16,7 +16,7 @@ yarn create @everlutionsk/react-app <directory>
 
 - Monorepo support
 - Improved [styled-components](https://github.com/styled-components/babel-plugin-styled-components) support
-- [React hot loader](https://github.com/gaearon/react-hot-loader)
+- enable experimental [react-refresh](https://github.com/facebook/create-react-app/pull/8582)
 - [Automatic per-component CSS import for AntD](https://ant.design/docs/react/use-with-create-react-app#Use-babel-plugin-import)
 - [Optimize Material-UI imports to reduce bundle size in dev mode](https://material-ui.com/guides/minimizing-bundle-size/)
 - [Optimize lodash imports to reduce bundle size in dev mode](https://github.com/lodash/babel-plugin-lodash)
@@ -81,10 +81,6 @@ module.exports = function() {
   };
 };
 ```
-
-## 🔥 Hot reload
-
-To enable full hot-reload experience, the `@hot-loader/react-dom` must be installed as a dev dependency.
 
 ## 🚀 Performance tips
 

@@ -100,10 +100,6 @@ module.exports = async function customConfig({
 
   const moduleAliases = {
     lodash: moduleExists('lodash-es') ? 'lodash-es' : 'lodash',
-    'react-dom':
-      isEnvDevelopment && moduleExists('@hot-loader/react-dom')
-        ? '@hot-loader/react-dom'
-        : 'react-dom',
   };
 
   const additionalPlugins = [
