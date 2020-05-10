@@ -32,7 +32,7 @@ module.exports = async function customConfig({
   ];
 
   const appBabelPlugins = [
-    require.resolve('react-hot-loader/babel'),
+    // Cherry-pick Lodash modules automatically and reduce bundle size.
     require.resolve('babel-plugin-lodash'),
     // We are using `babel-plugin-import` to change imports like
     // `import { Button } from 'antd'` into `import Button from `antd/es/Button`.
