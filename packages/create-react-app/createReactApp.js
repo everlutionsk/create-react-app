@@ -346,7 +346,7 @@ function install(root, useYarn, usePnp, dependencies, verbose, isOnline) {
     let args;
     if (useYarn) {
       command = 'yarnpkg';
-      args = ['add', '--exact', '--registry', 'https://npm.everlution.sk'];
+      args = ['add', '--exact'];
       if (!isOnline) {
         args.push('--offline');
       }
@@ -376,8 +376,6 @@ function install(root, useYarn, usePnp, dependencies, verbose, isOnline) {
         '--save-exact',
         '--loglevel',
         'error',
-        '--registry',
-        'https://npm.everlution.sk',
       ].concat(dependencies);
 
       if (usePnp) {
