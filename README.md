@@ -1,14 +1,16 @@
 # Everlution Create React App
 
-Fork of an official [Create React App](https://github.com/facebook/create-react-app)!
+Fork of the official [Create React App](https://github.com/facebook/create-react-app)!
 
 ## Quick start
 
-```sh
-npm -g --registry https://npm.everlution.sk install @everlutionsk/create-react-app && everlutionsk-create-react-app my-app --typescript
+```
+yarn create @everlutionsk/react-app <directory>
 ```
 
-If you've previously installed `create-react-app` globally via `npm install -g create-react-app`, we recommend you uninstall the package using `npm uninstall -g create-react-app` to ensure that npx always uses the latest version.
+> Your global NPM registry must be set to Everlution NPM.
+>
+> Please use `yarn config set registry https://npm.everlution.sk` if necessary.
 
 ## What’s Included in this fork?
 
