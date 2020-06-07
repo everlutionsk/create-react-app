@@ -77,6 +77,7 @@ module.exports = async function(webpackEnv) {
     additionalPlugins,
     moduleAliases,
   } = await require('./everlution')({
+    appPath: paths.appPath,
     isEnvDevelopment,
     isEnvProduction,
   });

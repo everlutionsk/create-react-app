@@ -22,6 +22,7 @@ yarn create @everlutionsk/react-app <directory>
 - [Optimize lodash imports to reduce bundle size in dev mode](https://github.com/lodash/babel-plugin-lodash)
 - [Safe environment loader](https://github.com/deftomat/safe-environment-loader) for `environment.ts` files.
 - [Bundle analyzer](https://www.npmjs.com/package/webpack-bundle-analyzer) - usage: `react-scripts build --analyze-bundle`
+- [Apollo React types generator](https://github.com/everlutionsk/packages/tree/master/packages/graphql-types-generator) - EXPERIMENTAL! Use `GRAPHQL_TYPES=true` env variable to enable it.
 - Alias `lodash` to `lodash-es` if possible to reduce bundle size
 - support for `project.config.js` - usage: see below
 - customized ESLint rules

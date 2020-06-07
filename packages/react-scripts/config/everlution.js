@@ -2,16 +2,24 @@
 
 const { createConfigFinder } = require('@everlutionsk/project-config');
 const { generateBuildId } = require('@everlutionsk/helpers-tools');
+const {
+  ApolloReactTypesPlugin,
+} = require('@everlutionsk/graphql-types-generator');
 const minimist = require('minimist');
 const path = require('path');
+const fs = require('fs');
 const paths = require('./paths');
 
 module.exports = async function customConfig({
+  appPath,
   isEnvDevelopment,
   isEnvProduction,
 }) {
   const args = minimist(process.argv.slice(2));
   const analyzeBundle = args['analyze-bundle'] || false;
+  const graphqlSchemaPath = `${appPath}/../api/src/schema.graphql`;
+  const generateGraphqlTypes =
+    process.env.GRAPHQL_TYPES === 'true' && fs.existsSync(graphqlSchemaPath);
   const findProjectConfig = createConfigFinder({ cwd: paths.appPath });
   const buildId = generateBuildId();
   const craConfig = resolveCraConfig({ isEnvDevelopment, isEnvProduction });
@@ -103,6 +111,12 @@ module.exports = async function customConfig({
   };
 
   const additionalPlugins = [
+    generateGraphqlTypes &&
+      new ApolloReactTypesPlugin({
+        schemaPath: graphqlSchemaPath,
+        watchPattern: `${appPath}/src/**/!(*.css|*.js)`,
+        outputDir: `${appPath}/src/graphql`,
+      }),
     analyzeBundle &&
       new (require('webpack-bundle-analyzer').BundleAnalyzerPlugin)(),
     ...craConfig.plugins,
