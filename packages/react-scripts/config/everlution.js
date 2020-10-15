@@ -4,6 +4,7 @@ const { createConfigFinder } = require('@everlutionsk/project-config');
 const { generateBuildId } = require('@everlutionsk/helpers-tools');
 const {
   ApolloReactTypesPlugin,
+  detectTarget,
 } = require('@everlutionsk/graphql-types-generator');
 const minimist = require('minimist');
 const path = require('path');
@@ -19,7 +20,7 @@ module.exports = async function customConfig({
   const analyzeBundle = args['analyze-bundle'] || false;
   const graphqlSchemaPath = `${appPath}/../api/src/schema.graphql`;
   const generateGraphqlTypes =
-    process.env.GRAPHQL_TYPES === 'true' && fs.existsSync(graphqlSchemaPath);
+    detectTarget(appPath) === 'frontend' && fs.existsSync(graphqlSchemaPath);
   const findProjectConfig = createConfigFinder({ cwd: paths.appPath });
   const buildId = generateBuildId();
   const craConfig = resolveCraConfig({ isEnvDevelopment, isEnvProduction });
@@ -112,11 +113,7 @@ module.exports = async function customConfig({
 
   const additionalPlugins = [
     generateGraphqlTypes &&
-      new ApolloReactTypesPlugin({
-        schemaPath: graphqlSchemaPath,
-        watchPattern: `${appPath}/src/**/!(*.css|*.js)`,
-        outputDir: `${appPath}/src/graphql`,
-      }),
+      new ApolloReactTypesPlugin({ schemaPath: graphqlSchemaPath }),
     analyzeBundle &&
       new (require('webpack-bundle-analyzer').BundleAnalyzerPlugin)(),
     ...craConfig.plugins,
@@ -178,8 +175,8 @@ async function generateHtmlWebpackPluginOptions({
 }
 
 function stringifyCSP(csp) {
-  const join = strings => strings.filter(i => i != null).join(' ');
-  const toKebabCase = string =>
+  const join = (strings) => strings.filter((i) => i != null).join(' ');
+  const toKebabCase = (string) =>
     string.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase();
 
   if (typeof csp === 'string') return csp;
