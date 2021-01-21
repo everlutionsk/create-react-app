@@ -64,7 +64,7 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
-module.exports = async function(webpackEnv) {
+module.exports = async function (webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
 
@@ -214,12 +214,13 @@ module.exports = async function(webpackEnv) {
       publicPath: paths.publicUrlOrPath,
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
-        ? info =>
+        ? (info) =>
             path
               .relative(paths.appSrc, info.absoluteResourcePath)
               .replace(/\\/g, '/')
         : isEnvDevelopment &&
-          (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+          ((info) =>
+            path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
       // Prevents conflicts when multiple webpack runtimes (from different apps)
       // are used on the same page.
       jsonpFunction: `webpackJsonp${appPackageJson.name}`,
@@ -302,7 +303,7 @@ module.exports = async function(webpackEnv) {
       // https://twitter.com/wSokra/status/969679223278505985
       // https://github.com/facebook/create-react-app/issues/5358
       runtimeChunk: {
-        name: entrypoint => `runtime-${entrypoint.name}`,
+        name: (entrypoint) => `runtime-${entrypoint.name}`,
       },
     },
     resolve: {
@@ -320,8 +321,8 @@ module.exports = async function(webpackEnv) {
       // `web` extension prefixes have been added for better support
       // for React Native Web.
       extensions: paths.moduleFileExtensions
-        .map(ext => `.${ext}`)
-        .filter(ext => useTypeScript || !ext.includes('ts')),
+        .map((ext) => `.${ext}`)
+        .filter((ext) => useTypeScript || !ext.includes('ts')),
       alias: {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -590,6 +591,12 @@ module.exports = async function(webpackEnv) {
               exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
               options: {
                 name: 'static/media/[name].[hash:8].[ext]',
+                publicPath: (url) => {
+                  if (process.env.PUBLIC_URL === undefined) {
+                    return url;
+                  }
+                  return `${process.env.PUBLIC_URL}/${url}`;
+                },
               },
             },
             // ** STOP ** Are you adding a new loader?
@@ -693,7 +700,7 @@ module.exports = async function(webpackEnv) {
             return manifest;
           }, seed);
           const entrypointFiles = entrypoints.main.filter(
-            fileName => !fileName.endsWith('.map')
+            (fileName) => !fileName.endsWith('.map')
           );
 
           return {
