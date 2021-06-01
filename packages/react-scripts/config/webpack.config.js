@@ -15,26 +15,26 @@ const resolve = require('resolve');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
+const InlineChunkHtmlPlugin = require('@everlutionsk/react-dev-utils/InlineChunkHtmlPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+const InterpolateHtmlPlugin = require('@everlutionsk/react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
+const WatchMissingNodeModulesPlugin = require('@everlutionsk/react-dev-utils/WatchMissingNodeModulesPlugin');
+const ModuleScopePlugin = require('@everlutionsk/react-dev-utils/ModuleScopePlugin');
+const getCSSModuleLocalIdent = require('@everlutionsk/react-dev-utils/getCSSModuleLocalIdent');
 const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
-const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
-const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
-const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+const ModuleNotFoundPlugin = require('@everlutionsk/react-dev-utils/ModuleNotFoundPlugin');
+const ForkTsCheckerWebpackPlugin = require('@everlutionsk/react-dev-utils/ForkTsCheckerWebpackPlugin');
+const typescriptFormatter = require('@everlutionsk/react-dev-utils/typescriptFormatter');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 // @remove-on-eject-begin
-const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
+const getCacheIdentifier = require('@everlutionsk/react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
 const postcssNormalize = require('postcss-normalize');
 
@@ -44,7 +44,7 @@ const appPackageJson = require(paths.appPackageJson);
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 const webpackDevClientEntry = require.resolve(
-  'react-dev-utils/webpackHotDevClient'
+  '@everlutionsk/react-dev-utils/webpackHotDevClient'
 );
 
 const isExtendingEslintConfig = process.env.EXTEND_ESLINT === 'true';
@@ -369,7 +369,7 @@ module.exports = async function (webpackEnv) {
             {
               options: {
                 cache: true,
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
+                formatter: require.resolve('@everlutionsk/react-dev-utils/eslintFormatter'),
                 eslintPath: require.resolve('eslint'),
                 resolvePluginsRelativeTo: __dirname,
                 // @remove-on-eject-begin
@@ -377,7 +377,7 @@ module.exports = async function (webpackEnv) {
                 baseConfig: isExtendingEslintConfig
                   ? undefined
                   : {
-                      extends: [require.resolve('eslint-config-react-app')],
+                      extends: [require.resolve('@everlutionsk/eslint-config-react-app')],
                     },
                 useEslintrc: isExtendingEslintConfig,
                 // @remove-on-eject-end
@@ -432,8 +432,8 @@ module.exports = async function (webpackEnv) {
                   [
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
-                    'react-dev-utils',
-                    'react-scripts',
+                    '@everlutionsk/react-dev-utils',
+                    '@everlutionsk/react-scripts',
                   ]
                 ),
                 // @remove-on-eject-end
@@ -490,8 +490,8 @@ module.exports = async function (webpackEnv) {
                   [
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
-                    'react-dev-utils',
-                    'react-scripts',
+                    '@everlutionsk/react-dev-utils',
+                    '@everlutionsk/react-scripts',
                   ]
                 ),
                 plugins: dependencyBabelPlugins,
