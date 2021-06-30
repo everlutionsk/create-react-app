@@ -593,7 +593,7 @@ module.exports = async function (webpackEnv) {
                 name: 'static/media/[name].[hash:8].[ext]',
                 publicPath: (url) => {
                   if (process.env.PUBLIC_URL === undefined) {
-                    return url;
+                    return `/${url}`;
                   }
                   return `${process.env.PUBLIC_URL}/${url}`;
                 },
